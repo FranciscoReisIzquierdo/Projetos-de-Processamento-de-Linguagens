@@ -4,6 +4,8 @@ import ply.lex as lex
 import re
 import ply.yacc as yacc
 import json
+import statistics
+
 
 
 ###################### Global variables ######################
@@ -159,6 +161,9 @@ def t_error(t):
 
 
 
+
+
+
 #################################################################
 
 ##################### Example of the Syntax #####################
@@ -251,6 +256,7 @@ def p_empty(p):
 # Function that defines what phrase is a syntax error
 def p_error(p):
 	print("Syntax error found! Syntax: ", p)
+	sys.exit("")
 
 
 #################################################################
@@ -297,32 +303,63 @@ while True:
 	break
 
 
+# Function that returns the most frequent element of a list
+def most_frequent(l):
+    counter = 0
+    num = l[0]
+
+    for i in l:
+        curr_frequency = l.count(i)
+        if(curr_frequency> counter):
+            counter = curr_frequency
+            num = i
+ 
+    return num
+
+
+# Function to allow accented characters
+def simplify(text):
+    import unicodedata
+    try:
+        text = unicode(text, 'utf-8')
+    except NameError:
+        pass
+    text = unicodedata.normalize('NFD', text).encode('ascii', 'ignore').decode("utf-8")
+    return str(text)
+
+
+
 #Function that builds a list with all the lines from the CSV file, organizing by dictionary per global struture
 def buildJSON(list, allLines):
 
 	dictionary = {} 
 	for structure in list:
 		if type(structure) == ColumnID:
-			dictionary.update({structure.name : structure.parameter})
+			dictionary.update({simplify(structure.name) : simplify(structure.parameter)})
 
 		elif type(structure) == DefinedList:
-			dictionary.update({structure.name : structure.list})
+			dictionary.update({simplify(structure.name) : str(structure.list)})
 
 		elif type(structure) == BetweenList:
-			dictionary.update({structure.name : structure.list})
+			dictionary.update({simplify(structure.name) : str(structure.list)})
 
 		else:
 			name = structure.name + "_" + structure.function
-			# print("FUNCTION NAME: ", name)
-			dictionary.update({name : structure.list})
+			if structure.list:
+
+				if structure.function == "sum":
+					dictionary.update({simplify(name) : sum(map(int, structure.list))})
+
+				elif structure.function == "media":
+					dictionary.update({simplify(name) : statistics.median(map(int, structure.list))})
+
+				elif structure.function == "maisrecorrente":
+					 dictionary.update({simplify(name) : most_frequent(structure.list)})
+				else:
+					dictionary.update({simplify(name) : ""})
+
 
 	allLines.append(dictionary)
-
-
-
-# TAREFAS: QUANDO COMPARAR CENAS USAR REGEX
-# MELHORAR CONDIÇÕES DE ERRO
-
 
 
 
