@@ -1,0 +1,252 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> language
+Rule 1     language -> expression
+Rule 2     language -> interval
+Rule 3     language -> size
+Rule 4     language -> function
+Rule 5     language -> empty
+Rule 6     interval -> LCBRACKET RANGE COMMA RANGE RCBRACKET
+Rule 7     size -> LCBRACKET RANGE RCBRACKET
+Rule 8     function -> OP expression
+Rule 9     expression -> expression size
+Rule 10    expression -> expression interval
+Rule 11    expression -> expression interval function
+Rule 12    expression -> ID
+Rule 13    empty -> <empty>
+
+Terminals, with rules where they appear
+
+COMMA                : 6
+ID                   : 12
+LCBRACKET            : 6 7
+OP                   : 8
+RANGE                : 6 6 7
+RCBRACKET            : 6 7
+error                : 
+
+Nonterminals, with rules where they appear
+
+empty                : 5
+expression           : 1 8 9 10 11
+function             : 4 11
+interval             : 2 10 11
+language             : 0
+size                 : 3 9
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . language
+    (1) language -> . expression
+    (2) language -> . interval
+    (3) language -> . size
+    (4) language -> . function
+    (5) language -> . empty
+    (9) expression -> . expression size
+    (10) expression -> . expression interval
+    (11) expression -> . expression interval function
+    (12) expression -> . ID
+    (6) interval -> . LCBRACKET RANGE COMMA RANGE RCBRACKET
+    (7) size -> . LCBRACKET RANGE RCBRACKET
+    (8) function -> . OP expression
+    (13) empty -> .
+
+    ID              shift and go to state 7
+    LCBRACKET       shift and go to state 8
+    OP              shift and go to state 9
+    $end            reduce using rule 13 (empty -> .)
+
+    language                       shift and go to state 1
+    expression                     shift and go to state 2
+    interval                       shift and go to state 3
+    size                           shift and go to state 4
+    function                       shift and go to state 5
+    empty                          shift and go to state 6
+
+state 1
+
+    (0) S' -> language .
+
+
+
+state 2
+
+    (1) language -> expression .
+    (9) expression -> expression . size
+    (10) expression -> expression . interval
+    (11) expression -> expression . interval function
+    (7) size -> . LCBRACKET RANGE RCBRACKET
+    (6) interval -> . LCBRACKET RANGE COMMA RANGE RCBRACKET
+
+    $end            reduce using rule 1 (language -> expression .)
+    LCBRACKET       shift and go to state 12
+
+    size                           shift and go to state 10
+    interval                       shift and go to state 11
+
+state 3
+
+    (2) language -> interval .
+
+    $end            reduce using rule 2 (language -> interval .)
+
+
+state 4
+
+    (3) language -> size .
+
+    $end            reduce using rule 3 (language -> size .)
+
+
+state 5
+
+    (4) language -> function .
+
+    $end            reduce using rule 4 (language -> function .)
+
+
+state 6
+
+    (5) language -> empty .
+
+    $end            reduce using rule 5 (language -> empty .)
+
+
+state 7
+
+    (12) expression -> ID .
+
+    LCBRACKET       reduce using rule 12 (expression -> ID .)
+    $end            reduce using rule 12 (expression -> ID .)
+
+
+state 8
+
+    (6) interval -> LCBRACKET . RANGE COMMA RANGE RCBRACKET
+    (7) size -> LCBRACKET . RANGE RCBRACKET
+
+    RANGE           shift and go to state 13
+
+
+state 9
+
+    (8) function -> OP . expression
+    (9) expression -> . expression size
+    (10) expression -> . expression interval
+    (11) expression -> . expression interval function
+    (12) expression -> . ID
+
+    ID              shift and go to state 7
+
+    expression                     shift and go to state 14
+
+state 10
+
+    (9) expression -> expression size .
+
+    LCBRACKET       reduce using rule 9 (expression -> expression size .)
+    $end            reduce using rule 9 (expression -> expression size .)
+
+
+state 11
+
+    (10) expression -> expression interval .
+    (11) expression -> expression interval . function
+    (8) function -> . OP expression
+
+    LCBRACKET       reduce using rule 10 (expression -> expression interval .)
+    $end            reduce using rule 10 (expression -> expression interval .)
+    OP              shift and go to state 9
+
+    function                       shift and go to state 15
+
+state 12
+
+    (7) size -> LCBRACKET . RANGE RCBRACKET
+    (6) interval -> LCBRACKET . RANGE COMMA RANGE RCBRACKET
+
+    RANGE           shift and go to state 16
+
+
+state 13
+
+    (6) interval -> LCBRACKET RANGE . COMMA RANGE RCBRACKET
+    (7) size -> LCBRACKET RANGE . RCBRACKET
+
+    COMMA           shift and go to state 17
+    RCBRACKET       shift and go to state 18
+
+
+state 14
+
+    (8) function -> OP expression .
+    (9) expression -> expression . size
+    (10) expression -> expression . interval
+    (11) expression -> expression . interval function
+    (7) size -> . LCBRACKET RANGE RCBRACKET
+    (6) interval -> . LCBRACKET RANGE COMMA RANGE RCBRACKET
+
+  ! shift/reduce conflict for LCBRACKET resolved as shift
+    $end            reduce using rule 8 (function -> OP expression .)
+    LCBRACKET       shift and go to state 12
+
+  ! LCBRACKET       [ reduce using rule 8 (function -> OP expression .) ]
+
+    size                           shift and go to state 10
+    interval                       shift and go to state 11
+
+state 15
+
+    (11) expression -> expression interval function .
+
+    LCBRACKET       reduce using rule 11 (expression -> expression interval function .)
+    $end            reduce using rule 11 (expression -> expression interval function .)
+
+
+state 16
+
+    (7) size -> LCBRACKET RANGE . RCBRACKET
+    (6) interval -> LCBRACKET RANGE . COMMA RANGE RCBRACKET
+
+    RCBRACKET       shift and go to state 18
+    COMMA           shift and go to state 17
+
+
+state 17
+
+    (6) interval -> LCBRACKET RANGE COMMA . RANGE RCBRACKET
+
+    RANGE           shift and go to state 19
+
+
+state 18
+
+    (7) size -> LCBRACKET RANGE RCBRACKET .
+
+    $end            reduce using rule 7 (size -> LCBRACKET RANGE RCBRACKET .)
+    LCBRACKET       reduce using rule 7 (size -> LCBRACKET RANGE RCBRACKET .)
+
+
+state 19
+
+    (6) interval -> LCBRACKET RANGE COMMA RANGE . RCBRACKET
+
+    RCBRACKET       shift and go to state 20
+
+
+state 20
+
+    (6) interval -> LCBRACKET RANGE COMMA RANGE RCBRACKET .
+
+    $end            reduce using rule 6 (interval -> LCBRACKET RANGE COMMA RANGE RCBRACKET .)
+    OP              reduce using rule 6 (interval -> LCBRACKET RANGE COMMA RANGE RCBRACKET .)
+    LCBRACKET       reduce using rule 6 (interval -> LCBRACKET RANGE COMMA RANGE RCBRACKET .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for LCBRACKET in state 14 resolved as shift
