@@ -1,12 +1,8 @@
 import sys
-import csv
 import ply.lex as lex
 import re
-import ply.yacc as yacc
 import json
 import statistics
-
-
 
 ###################### Global variables ######################
 
@@ -99,20 +95,95 @@ class FunctionAgregList:
 ##############################################################
 
 
-# Function to build the format header
-def buildHeader():
-	global header
-	with open(fileCSV, "r") as f:
-		maxLine = 0
-		reader = csv.reader(f)
-		for row in reader:
-			if maxLine == 1:
-				break
-			header = row
-			maxLine += 1
-	f.close()
+###################### Defining the tokens ###################
+
+# List of tokens for the syntax
+
+tokens = [ 'ID', 'DEFINEDLIST', 'BETWEENLIST', 'FUNCTIONAGREGLIST', "COMMA"]
 
 
+##############################################################
+
+
+###################### Regular Expressions ###################
+
+columnID = r'[a-zA-Z\u00C0-\u017F\/_]+'
+size = r'\{(\d+)\}'
+interval = r'\{(\d+)\,(\d+)\}'
+function = r'\:\:(\w+)'
+
+readCell = r'([^,\n\t]*)(,|\n|\t?)'
+
+###################### Rules for Regex #######################
+
+
+# Rule for token FUNCTIONAGREGLIST
+def t_FUNCTIONAGREGLIST(t):
+
+	r'[a-zA-Z\u00C0-\u017F\/_]+\{\d+\,\d+\}\:\:\w+'
+
+	regex = fr'({columnID})({interval})({function})'
+	regexExp = re.compile(regex)
+
+	obj = FunctionAgregList(regexExp.search(t.value).group(1), int(regexExp.search(t.value).group(3)),
+	 int(regexExp.search(t.value).group(4)), regexExp.search(t.value).group(6))
+
+	global formatHeader
+	formatHeader.append(obj)
+
+
+# Rule for token BETWEENLIST
+def t_BETWEENLIST(t):
+
+	r'[a-zA-Z\u00C0-\u017F\/_]+\{\d+\,\d+\}'
+
+	regex = fr'({columnID})({interval})'
+
+	regexExp = re.compile(regex)
+
+	obj = BetweenList(regexExp.search(t.value).group(1), int(regexExp.search(t.value).group(3)),
+	 int(regexExp.search(t.value).group(4)))
+
+	global formatHeader
+	formatHeader.append(obj)
+
+
+# Rule for token DEFINEDLIST
+def t_DEFINEDLIST(t):
+
+	r'[a-zA-Z\u00C0-\u017F\/_]+\{(\d+)\}'
+
+	regex = fr'({columnID})({size})'
+
+	regexExp = re.compile(regex)
+
+	obj = BetweenList(regexExp.search(t.value).group(1), int(regexExp.search(t.value).group(3)))
+
+	global formatHeader
+	formatHeader.append(obj)
+
+
+# Rule for token ID
+def t_ID(t):
+
+	r'[a-zA-Z\u00C0-\u017F\/_]+'
+	global formatHeader
+
+	obj = ColumnID(t.value)
+
+	formatHeader.append(obj)
+
+# Rule to ignore
+t_ignore = r',| "'
+	
+
+# Throw error if unkown token
+def t_error(t):
+	print("Error: Unknown token: ", t)
+	sys.exit("")
+
+
+##############################################################
 
 # Function that evaluates if input is correct
 def secure():
@@ -129,178 +200,31 @@ def secure():
 	fileCSV = fileName
 
 
+# Function to build the format header
+def buildHeader():
+	global header
+	with open(fileCSV, "r") as f:
+		cabecalho = f.readline().strip()
+		lexer = lex.lex()
+
+		lexer.input(cabecalho)
+		while True:
+			for token in lexer:
+				print(token)
+			break
+	f.close()
+
+
+# Function to create the name of the JSON file
+def createJSONNameFile():
+	filename = fileCSV.split('.', 1)
+	global fileJSON
+	fileJSON = filename[0] + ".json"
+
+
 secure()
 buildHeader()
-
-
-###################### Defining the tokens ######################
-
-# List of tokens for the syntax
-tokens = [ 'ID', 'LCBRACKET', 'RCBRACKET', 'RANGE', 'COMMA', 'OP' ]
-
-# Regex for the tokens
-t_OP = r'\:\:'
-t_COMMA = r'\,'
-
-def t_RANGE(t):
-	r'\d+'
-	t.value = int(t.value)
-
-	return t
-
-t_LCBRACKET = r'\{'
-t_RCBRACKET = r'\}'
-t_ID = r'[a-zA-Z\u00C0-\u017F\/_]+'
-# t_ID = r'[a-zA-Z\/_]+'
-t_ignore = r' +'
-
-# Throw error if unkown token
-def t_error(t):
-	print("Error: Unknown token: ", t)
-	sys.exit("")
-
-
-
-
-
-
-#################################################################
-
-##################### Example of the Syntax #####################
-
-# ID
-# ID LCBRACKET RANGE RCBRACKET
-# ID LCBRACKET RANGE COMMA RANGE RCBRACKET
-# ID LCBRACKET RANGE RCBRACKET OP ID
-# ID LCBRACKET RANGE COMMA RANGE RCBRACKET OP ID
-
-#################################################################
-
-
-##################### Syntax Rules ##############################
-
-# Function that defines what could be our languange
-def p_language(p):
-	'''
-	language : expression
-			 | interval
-			 | size
-			 | function
-			 | empty
-	'''
-	run(p[1])
-
-
-# Function that defines what word is a interval
-def p_interval(p):
-	'''
-	interval : LCBRACKET RANGE COMMA RANGE RCBRACKET
-	'''
-	p[0] = (p[2], p[4])
-
-
-# Function that defines what word is a size
-def p_size(p):
-	'''
-	size : LCBRACKET RANGE RCBRACKET
-	'''
-	p[0] = (p[2])
-
-# Function that defines what word is a function
-def p_function(p):
-	'''
-	function : OP expression
-	'''
-	p[0] = (p[2])
-
-
-# Function that defines what phrase is a defined list
-def p_expression_definedList(p):
-	'''
-	expression : expression size
-	'''
-	p[0] = (p[1], p[2])
-
-
-# Function that defines what phrase is a between list
-def p_expression_betweenList(p):
-	'''
-	expression : expression interval
-	'''
-	p[0] = (p[1], p[2])
-
-
-# Function that defines what phrase is a function agregation list
-def p_expression_functionAgregList(p):
-	'''
-	expression : expression interval function
-	'''
-	p[0] = (p[1], p[2], p[3])
-
-
-# Function that defines what phrase is an id
-def p_expression_id(p):
-	'''
-	expression : ID
-	'''
-	p[0] = p[1]
-
-
-# Function that defines what word is empty
-def p_empty(p):
-	'''
-	empty : 
-	'''
-	p[0] = None
-
-# Function that defines what phrase is a syntax error
-def p_error(p):
-	print("Syntax error found! Syntax: ", p)
-	sys.exit("")
-
-
-#################################################################
-
-
-################## Converting from CSV to JSON ##################
-
-parser = yacc.yacc()
-
-
-
-# Function that builds the format header by following the syntax rules made
-def run(p):
-	global formatHeader
-	if type(p) == tuple:
-		if len(p) == 2 and type(p[1]) == tuple:
-			interval = p[1]
-			betweenList = BetweenList(p[0], interval[0], interval[1])
-			formatHeader.append(betweenList)
-
-
-		elif len(p) == 2:
-			definedList = DefinedList(p[0], p[1])
-			formatHeader.append(definedList)
-
-		else:
-			interval = p[1]
-			functionAgregList = FunctionAgregList(p[0], interval[0], interval[1], p[2])
-			formatHeader.append(functionAgregList)
-
-
-	elif type(p) == str:
-		column = ColumnID(p)
-		formatHeader.append(column)
-
-
-
-lexer = lex.lex()
-while True:
-
-	for element in header:
-		parser.parse(element)
-
-	break
+createJSONNameFile()
 
 
 # Function that returns the most frequent element of a list
@@ -317,124 +241,103 @@ def most_frequent(l):
     return num
 
 
-# Function to allow accented characters
-def simplify(text):
-    import unicodedata
-    try:
-        text = unicode(text, 'utf-8')
-    except NameError:
-        pass
-    text = unicodedata.normalize('NFD', text).encode('ascii', 'ignore').decode("utf-8")
-    return str(text)
-
-
-
 #Function that builds a list with all the lines from the CSV file, organizing by dictionary per global struture
-def buildJSON(list, allLines):
-
+def buildJSON(list2JSON, allLines):
 	dictionary = {} 
-	for structure in list:
-		if type(structure) == ColumnID:
-			dictionary.update({simplify(structure.name) : simplify(structure.parameter)})
 
-		elif type(structure) == DefinedList:
-			dictionary.update({simplify(structure.name) : str(structure.list)})
+	for structure in list2JSON:
+		if type(structure) == ColumnID:
+			dictionary.update({structure.name : structure.parameter})
+
+		elif type(structure) == DefinedList: 
+			dictionary.update({structure.name : str(structure.list)})
 
 		elif type(structure) == BetweenList:
-			dictionary.update({simplify(structure.name) : str(structure.list)})
+			dictionary.update({structure.name : str(structure.list)})
 
 		else:
 			name = structure.name + "_" + structure.function
 			if structure.list:
-
 				if structure.function == "sum":
-					dictionary.update({simplify(name) : sum(map(int, structure.list))})
+					dictionary.update({name : sum(map(int, structure.list))})
 
 				elif structure.function == "media":
-					dictionary.update({simplify(name) : statistics.median(map(int, structure.list))})
+					dictionary.update({name : statistics.median(map(int, structure.list))})
 
 				elif structure.function == "maisrecorrente":
-					 dictionary.update({simplify(name) : most_frequent(structure.list)})
+					 dictionary.update({name : most_frequent(structure.list)})
 				else:
-					dictionary.update({simplify(name) : ""})
-
+					dictionary.update({name : ""})
 
 	allLines.append(dictionary)
 
 
+def buildLine(listOfCells):
+	index = 0
+	list2JSON = []
+	for struct in formatHeader:
+		if type(struct) == ColumnID:
+			obj = ColumnID(struct.name)
+			obj.parameter = listOfCells[index]
+			list2JSON.append(obj)
+			index += 1
+
+		elif type(struct) == DefinedList:
+
+			obj = DefinedList(struct.name, struct.size)
+			for value in range(0, struct.size):
+				if listOfCells[index] != "":
+					obj.list.append(listOfCells[index])
+				index += 1
+			list2JSON.append(obj)
+
+		elif type(struct) == BetweenList:
+			obj = BetweenList(struct.name, struct.min, struct.max)
+			for value in range(0, struct.max):
+				if listOfCells[index] != "":
+					obj.list.append(listOfCells[index])
+				index += 1
+			list2JSON.append(obj)
+
+		else:
+
+			obj = FunctionAgregList(struct.name, struct.min, struct.max, struct.function)
+			for value in range(0, struct.max):
+				if listOfCells[index] != "":
+					obj.list.append(listOfCells[index])
+				index += 1
+			list2JSON.append(obj)
+	return list2JSON
+
 
 # Function that converts the CSV file to the JSON file
 def csv2json():
-
-	filename = fileCSV.split('.', 1)
-	
-	global fileJSON
-	fileJSON = filename[0] + ".json"
-
-	
-	allLines = []
-
-	with open(fileCSV, "r") as f:
-		
+	with open(fileCSV, "r") as file:
 		maxLine = 0
-		reader = csv.reader(f)
-		for row in reader:
+		allLines = []
+		regexExp = re.compile(readCell)
+
+		for line in file:
 			list2JSON = []
+			line = line.strip()
+ 
 			if maxLine == 0:
 				maxLine += 1
 
 			else:
-				# print("Linha: ", row)
-				index = 0
-				for struct in formatHeader:
+				listOfCells = []
+				for element in regexExp.finditer(line):
+					listOfCells.append(element.group(1))
 
-					if type(struct) == ColumnID:
-						obj = ColumnID(struct.name)
-						obj.parameter = row[index]
-						list2JSON.append(obj)
-						# obj.print()
-						index += 1
-
-					elif type(struct) == DefinedList:
-
-						obj = DefinedList(struct.name, struct.size)
-
-						for value in range(0, struct.size):
-							if row[index] != "":
-								obj.list.append(row[index])
-							index += 1
-						list2JSON.append(obj)
-						# obj.print()
-
-					elif type(struct) == BetweenList:
-
-						obj = BetweenList(struct.name, struct.min, struct.max)
-
-						for value in range(0, struct.max):
-							if row[index] != "":
-								obj.list.append(row[index])
-							index += 1
-						list2JSON.append(obj)
-						# obj.print()
-					elif type(struct) == FunctionAgregList:
-
-						obj = FunctionAgregList(struct.name, struct.min, struct.max, struct.function)
-
-						for value in range(0, struct.max):
-							if row[index] != "":
-								obj.list.append(row[index])
-							index += 1
-						list2JSON.append(obj)
-						# obj.print()
-			
+				list2JSON = buildLine(listOfCells)
 				buildJSON(list2JSON, allLines)
 
-		with open(fileJSON, "w") as f:
-			formatList = json.dumps(allLines, indent = 4)
-			f.write(formatList)
-
-
+	with open(fileJSON, "w") as file:
+		formatList = json.dumps(allLines, indent = 4, ensure_ascii = False)
+		file.write(formatList)
+	file.close()
+				
 csv2json()
 
-
+sys.exit("File " + fileJSON + " sucessfully created!")
 #################################################################
