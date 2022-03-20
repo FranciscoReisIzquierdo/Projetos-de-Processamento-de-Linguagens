@@ -310,6 +310,28 @@ def buildLine(listOfCells):
 	return list2JSON
 
 
+# Function that writes the info to the JSON file
+def createJSON(allLines):
+	with open(fileJSON, "w") as file:
+		file.write("[\n\n")
+		for dic in allLines:
+			file.write("    {  \n")
+
+			lista = dic.items()
+			index = 0
+			for element in lista:
+				if index != len(lista) -1:
+					string = "      " + element[0] + " : " + str(element[1]) + "," + "\n"
+					file.write(string)
+				else:
+					string = "      " + element[0] + " : " + str(element[1]) + "\n"
+					file.write(string)
+				index += 1
+			file.write("    }\n")
+		file.write("]")
+	file.close()
+
+
 # Function that converts the CSV file to the JSON file
 def csv2json():
 	with open(fileCSV, "r") as file:
@@ -331,12 +353,9 @@ def csv2json():
 
 				list2JSON = buildLine(listOfCells)
 				buildJSON(list2JSON, allLines)
+	
+	createJSON(allLines)
 
-	with open(fileJSON, "w") as file:
-		formatList = json.dumps(allLines, indent = 4, ensure_ascii = False)
-		file.write(formatList)
-	file.close()
-				
 csv2json()
 
 sys.exit("File " + fileJSON + " sucessfully created!")
