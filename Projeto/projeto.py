@@ -1,7 +1,6 @@
 import sys
 import ply.lex as lex
 import re
-import json
 import statistics
 
 ###################### Global variables ######################
@@ -328,7 +327,7 @@ def createJSON(allLines):
 					file.write(string)
 				index += 1
 			file.write("    }\n")
-		file.write("]")
+		file.write("]\n")
 	file.close()
 
 
