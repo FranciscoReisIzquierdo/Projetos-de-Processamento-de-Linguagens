@@ -1,0 +1,325 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> stat
+Rule 1     stat -> VAR = exp
+Rule 2     stat -> exp
+Rule 3     exp -> exp + exp
+Rule 4     exp -> exp - exp
+Rule 5     exp -> exp * exp
+Rule 6     exp -> exp / exp
+Rule 7     exp -> - exp
+Rule 8     exp -> NUMBER
+Rule 9     exp -> VAR
+
+Terminals, with rules where they appear
+
+*                    : 5
++                    : 3
+-                    : 4 7
+/                    : 6
+=                    : 1
+NUMBER               : 8
+VAR                  : 1 9
+error                : 
+
+Nonterminals, with rules where they appear
+
+exp                  : 1 2 3 3 4 4 5 5 6 6 7
+stat                 : 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . stat
+    (1) stat -> . VAR = exp
+    (2) stat -> . exp
+    (3) exp -> . exp + exp
+    (4) exp -> . exp - exp
+    (5) exp -> . exp * exp
+    (6) exp -> . exp / exp
+    (7) exp -> . - exp
+    (8) exp -> . NUMBER
+    (9) exp -> . VAR
+
+    VAR             shift and go to state 2
+    -               shift and go to state 4
+    NUMBER          shift and go to state 5
+
+    stat                           shift and go to state 1
+    exp                            shift and go to state 3
+
+state 1
+
+    (0) S' -> stat .
+
+
+
+state 2
+
+    (1) stat -> VAR . = exp
+    (9) exp -> VAR .
+
+    =               shift and go to state 6
+    +               reduce using rule 9 (exp -> VAR .)
+    -               reduce using rule 9 (exp -> VAR .)
+    *               reduce using rule 9 (exp -> VAR .)
+    /               reduce using rule 9 (exp -> VAR .)
+    $end            reduce using rule 9 (exp -> VAR .)
+
+
+state 3
+
+    (2) stat -> exp .
+    (3) exp -> exp . + exp
+    (4) exp -> exp . - exp
+    (5) exp -> exp . * exp
+    (6) exp -> exp . / exp
+
+    $end            reduce using rule 2 (stat -> exp .)
+    +               shift and go to state 7
+    -               shift and go to state 8
+    *               shift and go to state 9
+    /               shift and go to state 10
+
+
+state 4
+
+    (7) exp -> - . exp
+    (3) exp -> . exp + exp
+    (4) exp -> . exp - exp
+    (5) exp -> . exp * exp
+    (6) exp -> . exp / exp
+    (7) exp -> . - exp
+    (8) exp -> . NUMBER
+    (9) exp -> . VAR
+
+    -               shift and go to state 4
+    NUMBER          shift and go to state 5
+    VAR             shift and go to state 12
+
+    exp                            shift and go to state 11
+
+state 5
+
+    (8) exp -> NUMBER .
+
+    +               reduce using rule 8 (exp -> NUMBER .)
+    -               reduce using rule 8 (exp -> NUMBER .)
+    *               reduce using rule 8 (exp -> NUMBER .)
+    /               reduce using rule 8 (exp -> NUMBER .)
+    $end            reduce using rule 8 (exp -> NUMBER .)
+
+
+state 6
+
+    (1) stat -> VAR = . exp
+    (3) exp -> . exp + exp
+    (4) exp -> . exp - exp
+    (5) exp -> . exp * exp
+    (6) exp -> . exp / exp
+    (7) exp -> . - exp
+    (8) exp -> . NUMBER
+    (9) exp -> . VAR
+
+    -               shift and go to state 4
+    NUMBER          shift and go to state 5
+    VAR             shift and go to state 12
+
+    exp                            shift and go to state 13
+
+state 7
+
+    (3) exp -> exp + . exp
+    (3) exp -> . exp + exp
+    (4) exp -> . exp - exp
+    (5) exp -> . exp * exp
+    (6) exp -> . exp / exp
+    (7) exp -> . - exp
+    (8) exp -> . NUMBER
+    (9) exp -> . VAR
+
+    -               shift and go to state 4
+    NUMBER          shift and go to state 5
+    VAR             shift and go to state 12
+
+    exp                            shift and go to state 14
+
+state 8
+
+    (4) exp -> exp - . exp
+    (3) exp -> . exp + exp
+    (4) exp -> . exp - exp
+    (5) exp -> . exp * exp
+    (6) exp -> . exp / exp
+    (7) exp -> . - exp
+    (8) exp -> . NUMBER
+    (9) exp -> . VAR
+
+    -               shift and go to state 4
+    NUMBER          shift and go to state 5
+    VAR             shift and go to state 12
+
+    exp                            shift and go to state 15
+
+state 9
+
+    (5) exp -> exp * . exp
+    (3) exp -> . exp + exp
+    (4) exp -> . exp - exp
+    (5) exp -> . exp * exp
+    (6) exp -> . exp / exp
+    (7) exp -> . - exp
+    (8) exp -> . NUMBER
+    (9) exp -> . VAR
+
+    -               shift and go to state 4
+    NUMBER          shift and go to state 5
+    VAR             shift and go to state 12
+
+    exp                            shift and go to state 16
+
+state 10
+
+    (6) exp -> exp / . exp
+    (3) exp -> . exp + exp
+    (4) exp -> . exp - exp
+    (5) exp -> . exp * exp
+    (6) exp -> . exp / exp
+    (7) exp -> . - exp
+    (8) exp -> . NUMBER
+    (9) exp -> . VAR
+
+    -               shift and go to state 4
+    NUMBER          shift and go to state 5
+    VAR             shift and go to state 12
+
+    exp                            shift and go to state 17
+
+state 11
+
+    (7) exp -> - exp .
+    (3) exp -> exp . + exp
+    (4) exp -> exp . - exp
+    (5) exp -> exp . * exp
+    (6) exp -> exp . / exp
+
+    +               reduce using rule 7 (exp -> - exp .)
+    -               reduce using rule 7 (exp -> - exp .)
+    *               reduce using rule 7 (exp -> - exp .)
+    /               reduce using rule 7 (exp -> - exp .)
+    $end            reduce using rule 7 (exp -> - exp .)
+
+  ! +               [ shift and go to state 7 ]
+  ! -               [ shift and go to state 8 ]
+  ! *               [ shift and go to state 9 ]
+  ! /               [ shift and go to state 10 ]
+
+
+state 12
+
+    (9) exp -> VAR .
+
+    +               reduce using rule 9 (exp -> VAR .)
+    -               reduce using rule 9 (exp -> VAR .)
+    *               reduce using rule 9 (exp -> VAR .)
+    /               reduce using rule 9 (exp -> VAR .)
+    $end            reduce using rule 9 (exp -> VAR .)
+
+
+state 13
+
+    (1) stat -> VAR = exp .
+    (3) exp -> exp . + exp
+    (4) exp -> exp . - exp
+    (5) exp -> exp . * exp
+    (6) exp -> exp . / exp
+
+    $end            reduce using rule 1 (stat -> VAR = exp .)
+    +               shift and go to state 7
+    -               shift and go to state 8
+    *               shift and go to state 9
+    /               shift and go to state 10
+
+
+state 14
+
+    (3) exp -> exp + exp .
+    (3) exp -> exp . + exp
+    (4) exp -> exp . - exp
+    (5) exp -> exp . * exp
+    (6) exp -> exp . / exp
+
+    +               reduce using rule 3 (exp -> exp + exp .)
+    -               reduce using rule 3 (exp -> exp + exp .)
+    $end            reduce using rule 3 (exp -> exp + exp .)
+    *               shift and go to state 9
+    /               shift and go to state 10
+
+  ! *               [ reduce using rule 3 (exp -> exp + exp .) ]
+  ! /               [ reduce using rule 3 (exp -> exp + exp .) ]
+  ! +               [ shift and go to state 7 ]
+  ! -               [ shift and go to state 8 ]
+
+
+state 15
+
+    (4) exp -> exp - exp .
+    (3) exp -> exp . + exp
+    (4) exp -> exp . - exp
+    (5) exp -> exp . * exp
+    (6) exp -> exp . / exp
+
+    +               reduce using rule 4 (exp -> exp - exp .)
+    -               reduce using rule 4 (exp -> exp - exp .)
+    $end            reduce using rule 4 (exp -> exp - exp .)
+    *               shift and go to state 9
+    /               shift and go to state 10
+
+  ! *               [ reduce using rule 4 (exp -> exp - exp .) ]
+  ! /               [ reduce using rule 4 (exp -> exp - exp .) ]
+  ! +               [ shift and go to state 7 ]
+  ! -               [ shift and go to state 8 ]
+
+
+state 16
+
+    (5) exp -> exp * exp .
+    (3) exp -> exp . + exp
+    (4) exp -> exp . - exp
+    (5) exp -> exp . * exp
+    (6) exp -> exp . / exp
+
+    +               reduce using rule 5 (exp -> exp * exp .)
+    -               reduce using rule 5 (exp -> exp * exp .)
+    *               reduce using rule 5 (exp -> exp * exp .)
+    /               reduce using rule 5 (exp -> exp * exp .)
+    $end            reduce using rule 5 (exp -> exp * exp .)
+
+  ! +               [ shift and go to state 7 ]
+  ! -               [ shift and go to state 8 ]
+  ! *               [ shift and go to state 9 ]
+  ! /               [ shift and go to state 10 ]
+
+
+state 17
+
+    (6) exp -> exp / exp .
+    (3) exp -> exp . + exp
+    (4) exp -> exp . - exp
+    (5) exp -> exp . * exp
+    (6) exp -> exp . / exp
+
+    +               reduce using rule 6 (exp -> exp / exp .)
+    -               reduce using rule 6 (exp -> exp / exp .)
+    *               reduce using rule 6 (exp -> exp / exp .)
+    /               reduce using rule 6 (exp -> exp / exp .)
+    $end            reduce using rule 6 (exp -> exp / exp .)
+
+  ! +               [ shift and go to state 7 ]
+  ! -               [ shift and go to state 8 ]
+  ! *               [ shift and go to state 9 ]
+  ! /               [ shift and go to state 10 ]
+
