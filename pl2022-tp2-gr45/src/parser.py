@@ -298,19 +298,6 @@ def p_dic(p):
 	'''
 	p[0] = p[1]
 
-
-def p_conj(p):
-	'''
-	conj : Value ':' Value
-		 | Chars ':' Chars
-		 | Value ':' Chars
-		 | Chars ':' Value
-		 | conj ',' Value ':' Value
-		 | conj ',' Chars ':' Chars
-		 | conj ',' Value ':' Chars
-		 | conj ',' Chars ':' Value
-	'''
-
 #-------------------------------------------------------------------#
 
 
@@ -407,6 +394,7 @@ def convertFile():
 	for line in inputFile:
 		parser.parse(line)
 	finalFile.close()
+	print("File " + fileConverted + " created with sucess!")
 
 
 

@@ -1,0 +1,145 @@
+[
+
+    {  
+      "Nome" : "Cristiano Ronaldo dos Santos Aveiro",
+      Posições : ['LW', 'ST', 'ME'],
+      Clubes : ['Sporting Clube de Portugal', 'Manchester United', 'Real Madrid', 'Juventus'],
+      "Valores de Transferências_media" : 54000000.0
+    },
+    {  
+      "Nome" : "Lionel Andrés Messi Cuccittini",
+      Posições : ['RW', 'CF', 'ST'],
+      Clubes : ["Newell's Old Boys", 'Futebol Club Barcelona', 'Paris Saint Germain'],
+      "Valores de Transferências_media" : 0
+    },
+    {  
+      "Nome" : "NeyTerra da Silva Santos Sénior",
+      Posições : ['LW', 'ST'],
+      Clubes : ['Santos Futebol Clube', 'Futebol Club Barcelona', 'Paris Saint Germain'],
+      "Valores de Transferências_media" : 98000000.0
+    },
+    {  
+      "Nome" : "Luva de Pedreiro",
+      Posições : ['CF', 'ST'],
+      Clubes : ['Club de Regatas Vasco da Gama'],
+      "Valores de Transferências_media" : 400000000
+    },
+    {  
+      "Nome" : "Duarte Deus Lucas",
+      Posições : ['CF', 'ST', 'RW'],
+      Clubes : ['Paços de Ferreira', 'Folgosa da Maia', 'Tirsense Futebol Clube', 'Sport Lisboa Benfica'],
+      "Valores de Transferências_media" : 61160000.0
+    },
+    {  
+      "Nome" : "Francisco Espanhol",
+      Posições : ['MD', 'MC', 'MA'],
+      Clubes : [' Canelas', ' Real Madrid'],
+      "Valores de Transferências_media" : 20000
+    },
+    {  
+      "Nome" : "Luis Figo",
+      Posições : ['MD', 'ST', 'RW'],
+      Clubes : ['Sporting Clube de Portugal', 'Futebol Club Barcelona', 'Real Madrid', 'Futebol Clube Internazionale'],
+      "Valores de Transferências_media" : 1600000.0
+    },
+    {  
+      "Nome" : "Diego Maradona",
+      Posições : ['CF', 'RW', 'LW'],
+      Clubes : ['Boca Juniores', 'Futebol Club Barcelona', 'Napoli', 'Sevilla'],
+      "Valores de Transferências_media" : 12000000.0
+    },
+    {  
+      "Nome" : "Ronaldinho Gaúcho",
+      Posições : ['CF', 'RW', 'LW'],
+      Clubes : ['Grêmio', 'Paris Saint Germain', 'Futebol Club Barcelona', 'Inter Milão']
+    },
+    {  
+      "Nome" : "Rui Costa",
+      Posições : ['CF', 'ST', 'RW'],
+      Clubes : ['Fiorentina', 'Inter Milão', 'Sport Lisboa Benfica'],
+      "Valores de Transferências_media" : 12320010
+    },
+    {  
+      "Nome" : "Eusébio Ferreira",
+      Posições : [' MD', 'ST', 'RW'],
+      Clubes : ['Sport Lisboa Benfica', 'Beira-Mar'],
+      "Valores de Transferências_media" : 234302
+    },
+    {  
+      "Nome" : "Maniche",
+      Posições : ['MC', 'MD'],
+      Clubes : ['Sport Lisboa Benfica', 'Futebol Clube do Porto', 'Sporting Clube de Portugal'],
+      "Valores de Transferências_media" : 440000
+    },
+    {  
+      "Nome" : "Bernardo Silva",
+      Posições : ['MD', 'RW'],
+      Clubes : ['Sport Lisboa Benfica', 'Monaco', 'Mancherster City'],
+      "Valores de Transferências_media" : 511115101.0
+    },
+    {  
+      "Nome" : "Ruben Dias",
+      Posições : ['CB'],
+      Clubes : ['Sport Lisboa Benfica', 'Mancherster City'],
+      "Valores de Transferências_media" : 1000000
+    },
+    {  
+      "Nome" : "Pepe",
+      Posições : ['CB'],
+      Clubes : ['Maritimo', 'Futebol Clube do Porto', 'Real Madrid', 'Besiktas'],
+      "Valores de Transferências_media" : 110005.5
+    },
+    {  
+      "Nome" : "Robert Lewandowski",
+      Posições : ['LW', 'ST', 'RW'],
+      Clubes : ['Lech Poznań', 'Borussia Dortmund', 'Bayern de Munique'],
+      "Valores de Transferências_media" : 675000.0
+    },
+    {  
+      "Nome" : "Roberto Carlos",
+      Posições : ['LE', 'CB'],
+      Clubes : ['Palmeiras', 'Internazionale', 'Real Madrid', 'Fenerbahçe']
+    },
+    {  
+      "Nome" : "Kylian Mbappé",
+      Posições : ['LW', 'ST', 'RW'],
+      Clubes : ['Monaco', 'Paris Saint Germain'],
+      "Valores de Transferências_media" : 1510000.0
+    },
+    {  
+      "Nome" : "Sergio Ramos García",
+      Posições : ['LE', 'CB'],
+      Clubes : ['Sevilla', 'Real Madrid', 'Paris Saint-Germain'],
+      "Valores de Transferências_media" : 15000.0
+    },
+    {  
+      "Nome" : "Carlos Alberto Martínez Tévez",
+      Posições : ['CF', 'ST', 'RW'],
+      Clubes : ['Manchester City', 'Juventus', 'Boca Juniors', 'Shanghai Shenhua'],
+      "Valores de Transferências_media" : 1520000.0
+    },
+    {  
+      "Nome" : "Wayne Mark Rooney",
+      Posições : ['CF', 'ST'],
+      Clubes : ['Everton', 'Manchester United', 'Everton', 'D.C. United'],
+      "Valores de Transferências_media" : 33334444
+    },
+    {  
+      "Nome" : "Luís Carlos Almeida",
+      Posições : ['LW', 'ST', 'RW'],
+      Clubes : ['Sporting', 'Manchester United', 'Fenerbahçe', 'Valencia'],
+      "Valores de Transferências_media" : 3320000
+    },
+    {  
+      "Nome" : "Sebastián Coates Nión",
+      Posições : ['LE', 'CB'],
+      Clubes : ['Nacional', 'Liverpool', 'Sunderland', 'Sporting'],
+      "Valores de Transferências_media" : 115000.0
+    },
+    {  
+      "Nome" : "Ânderson Luís da Silva",
+      Posições : ['LE', 'CB'],
+      Clubes : ['Juventus', 'Cruzeiro', 'Benfica'],
+      "Valores de Transferências_media" : 200000
+    }
+]

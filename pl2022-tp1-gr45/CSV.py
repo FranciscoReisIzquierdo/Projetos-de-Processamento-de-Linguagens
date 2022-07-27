@@ -70,9 +70,26 @@ class BetweenList:
 		print("List: ", self.list)
 
 
+# Global struture for FUNCTIONAGREGDLIST
+class FunctionAgregDList:
+
+	# Function to initialize an object of this class
+	def __init__(self, id, size, function):
+		self.name = id
+		self.size = size
+		self.function = function
+		self.list = []
+
+	# Function to print the fields of the objet of this class
+	def print(self):
+		print("Id: ", self.name)
+		print("Size: ", self.size)
+		print("Function: ", self.function)
+		print("List: ", self.list)
+
 
 # Global struture for FUNCTIONAGREGLIST
-class FunctionAgregList:
+class FunctionAgregBList:
 
 	# Function to initialize an object of this class
 	def __init__(self, id, min, max, function):
@@ -98,7 +115,7 @@ class FunctionAgregList:
 
 # List of tokens for the syntax
 
-tokens = [ 'ID', 'DEFINEDLIST', 'BETWEENLIST', 'FUNCTIONAGREGLIST', "COMMA"]
+tokens = [ 'ID', 'DEFINEDLIST', 'BETWEENLIST', 'FUNCTIONAGREGBLIST', "FUNCTIONAGREGDLIST", "COMMA"]
 
 
 ##############################################################
@@ -106,26 +123,40 @@ tokens = [ 'ID', 'DEFINEDLIST', 'BETWEENLIST', 'FUNCTIONAGREGLIST', "COMMA"]
 
 ###################### Regular Expressions ###################
 
-columnID = r'[a-zA-Z\u00C0-\u017F\/_]+'
+columnID = r'(?:[a-zA-Z\u00C0-\u017F\/_]\s*\d*)+'
 size = r'\{(\d+)\}'
 interval = r'\{(\d+)\,(\d+)\}'
 function = r'\:\:(\w+)'
-
 readCell = r'([^,\n\t]*)(,|\n|\t?)'
 
 ###################### Rules for Regex #######################
 
 
-# Rule for token FUNCTIONAGREGLIST
-def t_FUNCTIONAGREGLIST(t):
+# Rule for token FUNCTIONAGREGBLIST
+def t_FUNCTIONAGREGBLIST(t):
 
-	r'[a-zA-Z\u00C0-\u017F\/_]+\{\d+\,\d+\}\:\:\w+'
+	r'(?:[a-zA-Z\u00C0-\u017F\/_]\s*\d*)+\{\d+\,\d+\}\:\:\w+'
 
 	regex = fr'({columnID})({interval})({function})'
 	regexExp = re.compile(regex)
 
-	obj = FunctionAgregList(regexExp.search(t.value).group(1), int(regexExp.search(t.value).group(3)),
+	obj = FunctionAgregBList(regexExp.search(t.value).group(1), int(regexExp.search(t.value).group(3)),
 	 int(regexExp.search(t.value).group(4)), regexExp.search(t.value).group(6))
+
+	global formatHeader
+	formatHeader.append(obj)
+
+
+# Rule for token FUNCTIONAGREGDLIST
+def t_FUNCTIONAGREGDLIST(t):
+
+	r'(?:[a-zA-Z\u00C0-\u017F\/_]\s*\d*)+\{\d+\}\:\:\w+'
+
+	regex = fr'({columnID})({size})({function})'
+	regexExp = re.compile(regex)
+
+	obj = FunctionAgregDList(regexExp.search(t.value).group(1), int(regexExp.search(t.value).group(3)),
+		regexExp.search(t.value).group(5))
 
 	global formatHeader
 	formatHeader.append(obj)
@@ -134,7 +165,7 @@ def t_FUNCTIONAGREGLIST(t):
 # Rule for token BETWEENLIST
 def t_BETWEENLIST(t):
 
-	r'[a-zA-Z\u00C0-\u017F\/_]+\{\d+\,\d+\}'
+	r'(?:[a-zA-Z\u00C0-\u017F\/_]\s*\d*)+\{\d+\,\d+\}'
 
 	regex = fr'({columnID})({interval})'
 
@@ -150,13 +181,13 @@ def t_BETWEENLIST(t):
 # Rule for token DEFINEDLIST
 def t_DEFINEDLIST(t):
 
-	r'[a-zA-Z\u00C0-\u017F\/_]+\{(\d+)\}'
+	r'(?:[a-zA-Z\u00C0-\u017F\/_]\s*\d*)+\{(\d+)\}'
 
 	regex = fr'({columnID})({size})'
 
 	regexExp = re.compile(regex)
 
-	obj = BetweenList(regexExp.search(t.value).group(1), int(regexExp.search(t.value).group(3)))
+	obj = DefinedList(regexExp.search(t.value).group(1), int(regexExp.search(t.value).group(3)))
 
 	global formatHeader
 	formatHeader.append(obj)
@@ -165,7 +196,7 @@ def t_DEFINEDLIST(t):
 # Rule for token ID
 def t_ID(t):
 
-	r'[a-zA-Z\u00C0-\u017F\/_]+'
+	r'(?:[a-zA-Z\u00C0-\u017F\/_]\s*\d*)+'
 	global formatHeader
 
 	obj = ColumnID(t.value)
@@ -246,16 +277,21 @@ def buildJSON(list2JSON, allLines):
 
 	for structure in list2JSON:
 		if type(structure) == ColumnID:
-			dictionary.update({structure.name : structure.parameter})
+			name = "\"" + str(structure.name)+ "\""
+			parameter = "\"" + str(structure.parameter)+ "\""
+			dictionary.update({name: parameter})
 
 		elif type(structure) == DefinedList: 
+			name = "\"" + str(structure.name)+ "\""
 			dictionary.update({structure.name : str(structure.list)})
 
 		elif type(structure) == BetweenList:
+			name = "\"" + str(structure.name)+ "\""
 			dictionary.update({structure.name : str(structure.list)})
 
 		else:
 			name = structure.name + "_" + structure.function
+			name = "\"" + str(name)+ "\""
 			if structure.list:
 				if structure.function == "sum":
 					dictionary.update({name : sum(map(int, structure.list))})
@@ -298,14 +334,22 @@ def buildLine(listOfCells):
 				index += 1
 			list2JSON.append(obj)
 
-		else:
+		elif type(struct) == FunctionAgregBList:
 
-			obj = FunctionAgregList(struct.name, struct.min, struct.max, struct.function)
+			obj = FunctionAgregBList(struct.name, struct.min, struct.max, struct.function)
 			for value in range(0, struct.max):
 				if listOfCells[index] != "":
 					obj.list.append(listOfCells[index])
 				index += 1
 			list2JSON.append(obj)
+		else:
+			obj = FunctionAgregDList(struct.name, struct.size, struct.function)
+			for value in range(0, struct.size):
+				if listOfCells[index] != "":
+					obj.list.append(listOfCells[index])
+				index += 1
+			list2JSON.append(obj)
+
 	return list2JSON
 
 
@@ -313,6 +357,7 @@ def buildLine(listOfCells):
 def createJSON(allLines):
 	with open(fileJSON, "w") as file:
 		file.write("[\n\n")
+		tam = 0
 		for dic in allLines:
 			file.write("    {  \n")
 
@@ -326,7 +371,11 @@ def createJSON(allLines):
 					string = "      " + element[0] + " : " + str(element[1]) + "\n"
 					file.write(string)
 				index += 1
-			file.write("    }\n")
+			if (len(allLines) - 1) == tam:
+				file.write("    }\n")
+			else:
+				file.write("    },\n")
+			tam+= 1	
 		file.write("]\n")
 	file.close()
 
